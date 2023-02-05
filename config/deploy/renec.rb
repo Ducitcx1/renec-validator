@@ -4,10 +4,27 @@
 # You can define all roles on a single server, or split them:
 
 # You need to change this to your server IP
-server "3.22.98.114", user: "ubuntu", roles: %w{primary}
+# server "3.22.98.114", user: "ubuntu", roles: %w{primary}
+
+# server "54.85.162.144", user: "ubuntu", roles: %w{primary} #renec-mainnet1
+# server "34.233.73.163", user: "ubuntu", roles: %w{primary} #renec-mainnet2
+# server "35.169.187.80", user: "ubuntu", roles: %w{primary} #renec-mainnet3
+# server "52.6.207.113", user: "ubuntu", roles: %w{primary} #renec-mainnet4
+# server "34.236.126.253", user: "ubuntu", roles: %w{primary} #renec-mainnet5
+# server "52.21.244.146", user: "ubuntu", roles: %w{primary} #renec-mainnet6
+server "18.234.202.94", user: "ubuntu", roles: %w{primary} #renec-mainnet1-new
+
+# testnet
+# server "54.82.166.148", user: "ubuntu", roles: %w{primary} #renec-testnet1
+# server "3.208.89.14", user: "ubuntu", roles: %w{primary} #renec-testnet2
+# server "54.224.243.106", user: "ubuntu", roles: %w{primary} #renec-testnet2
+
+# own validator
+# server "3.222.98.114", user: "ubuntu", roles: %w{primary}
+# server "54.91.199.153", user: "ubuntu", roles: %w{primary}
 
 # You need to change this to your server IP
-set :server_ip, "3.22.98.114"
+set :server_ip, "18.234.202.94"
 
 set :data_full_path, "/home/ubuntu/renec-cluster"
 set :renec_version, "1.9.29"
@@ -67,6 +84,13 @@ def install_nvme
   execute :sudo, "chown ubuntu:ubuntu #{fetch(:data_full_path)}"
 end
 
+# def install_storage_without_nvme
+#   return puts("Storage installed") if test("[ -d #{fetch(:data_full_path)} ]")
+#   execute :mkdir, "mkdir -p #{fetch(:data_full_path)}"
+#   execute :sudo, "bash -c 'echo LABEL=#{label}       #{fetch(:data_full_path)}   ext4    defaults,nofail        0       2  >> /etc/fstab'"
+#   execute :sudo, "chown ubuntu:ubuntu #{fetch(:data_full_path)}"
+# end
+
 def renec_service_definition
   template_path = File.expand_path("../../../coin-service-conf/renec.service.erb", __FILE__)
   template = ERB.new(File.read(template_path))
@@ -87,7 +111,11 @@ def start_renec_validator_command
   "/home/ubuntu/.local/share/renec/install/active_release/bin/renec-validator \
     --identity #{fetch(:data_full_path)}/keypairs/validator-identity.json \
     --vote-account #{fetch(:data_full_path)}/keypairs/validator-vote-account.json \
-    --known-validator DE6tC1q22h5R1H42dxGxVRYx8RRgmVqJq3BYUAnh4Lbv \
+    --known-validator 8eHFrtkeZ7dAjRKWN9m9Y8k8f8GbVu4goytXjTKRCSc6 \
+    --known-validator 3WsvssMpgNezCGLBQrS6Eb9ostA8AAvTtdnqNyvQQaxH \
+    --known-validator 7pgxXXsnZoCLAwXn3kvVrvskmc2keULrJQ3i7iaGEiLE \
+    --known-validator j2Udo3QHvbpB44RD7NSYKZhWL8SVuZXzVwbQ6KFnHDa \
+    --known-validator 8zmnqf8e1eDX51adYyomxvBWn7bk8bzFb1yBW8m1yqFC \
     --only-known-rpc \
     --ledger #{fetch(:data_full_path)}/ledger \
     --tpu-coalesce-ms 50 \
@@ -98,7 +126,11 @@ def start_renec_validator_command
     --enable-cpi-and-log-storage \
     --require-tower \
     --dynamic-port-range 8000-8020 \
-    --entrypoint 54.85.162.144:8001 \
+    --entrypoint 34.233.73.163:8001 \
+    --entrypoint 35.169.187.80:8001 \
+    --entrypoint 52.6.207.113:8001 \
+    --entrypoint 34.236.126.253:8001 \
+    --entrypoint 52.21.244.146:8001 \
     --expected-genesis-hash 7PNFRHLxT9FcAxSUcg3P8BraJnnUBnjuy8LwRbRJvVkX \
     --full-rpc-api \
     --incremental-snapshots \
@@ -107,6 +139,19 @@ def start_renec_validator_command
     --account-index spl-token-owner \
     --account-index spl-token-mint"
 end
+# --known-validator 8eHFrtkeZ7dAjRKWN9m9Y8k8f8GbVu4goytXjTKRCSc6  --known-validator 3WsvssMpgNezCGLBQrS6Eb9ostA8AAvTtdnqNyvQQaxH  --known-validator 7pgxXXsnZoCLAwXn3kvVrvskmc2keULrJQ3i7iaGEiLE  --known-validator j2Udo3QHvbpB44RD7NSYKZhWL8SVuZXzVwbQ6KFnHDa  --known-validator 8zmnqf8e1eDX51adYyomxvBWn7bk8bzFb1yBW8m1yqFC --entrypoint 34.233.73.163:8001  --entrypoint 35.169.187.80:8001  --entrypoint 52.6.207.113:8001  --entrypoint 34.236.126.253:8001  --entrypoint 52.21.244.146:8001
+
+# #node1
+# --known-validator 8eHFrtkeZ7dAjRKWN9m9Y8k8f8GbVu4goytXjTKRCSc6  --known-validator 3WsvssMpgNezCGLBQrS6Eb9ostA8AAvTtdnqNyvQQaxH  --known-validator 7pgxXXsnZoCLAwXn3kvVrvskmc2keULrJQ3i7iaGEiLE  --known-validator j2Udo3QHvbpB44RD7NSYKZhWL8SVuZXzVwbQ6KFnHDa  --known-validator 8zmnqf8e1eDX51adYyomxvBWn7bk8bzFb1yBW8m1yqFC --entrypoint 34.233.73.163:8001  --entrypoint 35.169.187.80:8001  --entrypoint 52.6.207.113:8001  --entrypoint 34.236.126.253:8001  --entrypoint 52.21.244.146:8001
+# #node3
+# --known-validator 8eHFrtkeZ7dAjRKWN9m9Y8k8f8GbVu4goytXjTKRCSc6  --known-validator 7pgxXXsnZoCLAwXn3kvVrvskmc2keULrJQ3i7iaGEiLE  --known-validator j2Udo3QHvbpB44RD7NSYKZhWL8SVuZXzVwbQ6KFnHDa  --known-validator 8zmnqf8e1eDX51adYyomxvBWn7bk8bzFb1yBW8m1yqFC --entrypoint 34.233.73.163:8001  --entrypoint 52.6.207.113:8001  --entrypoint 34.236.126.253:8001  --entrypoint 52.21.244.146:8001
+# #node4
+# --known-validator 8eHFrtkeZ7dAjRKWN9m9Y8k8f8GbVu4goytXjTKRCSc6  --known-validator 3WsvssMpgNezCGLBQrS6Eb9ostA8AAvTtdnqNyvQQaxH  --known-validator j2Udo3QHvbpB44RD7NSYKZhWL8SVuZXzVwbQ6KFnHDa  --known-validator 8zmnqf8e1eDX51adYyomxvBWn7bk8bzFb1yBW8m1yqFC --entrypoint 34.233.73.163:8001  --entrypoint 35.169.187.80:8001  --entrypoint 34.236.126.253:8001  --entrypoint 52.21.244.146:8001
+# #node5
+# --known-validator 8eHFrtkeZ7dAjRKWN9m9Y8k8f8GbVu4goytXjTKRCSc6  --known-validator 3WsvssMpgNezCGLBQrS6Eb9ostA8AAvTtdnqNyvQQaxH  --known-validator 7pgxXXsnZoCLAwXn3kvVrvskmc2keULrJQ3i7iaGEiLE  --known-validator 8zmnqf8e1eDX51adYyomxvBWn7bk8bzFb1yBW8m1yqFC --entrypoint 34.233.73.163:8001  --entrypoint 35.169.187.80:8001  --entrypoint 52.6.207.113:8001  --entrypoint 52.21.244.146:8001
+# #node 6 need to turn of ELB
+# --known-validator 8eHFrtkeZ7dAjRKWN9m9Y8k8f8GbVu4goytXjTKRCSc6  --known-validator 3WsvssMpgNezCGLBQrS6Eb9ostA8AAvTtdnqNyvQQaxH  --known-validator 7pgxXXsnZoCLAwXn3kvVrvskmc2keULrJQ3i7iaGEiLE  --known-validator j2Udo3QHvbpB44RD7NSYKZhWL8SVuZXzVwbQ6KFnHDa  --entrypoint 34.233.73.163:8001  --entrypoint 35.169.187.80:8001  --entrypoint 52.6.207.113:8001  --entrypoint 34.236.126.253:8001
+
 
 def start_renec_validator
   execute :sudo, "systemctl enable renec.service"
