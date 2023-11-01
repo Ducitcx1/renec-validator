@@ -50,10 +50,8 @@ def install_nvme
 
   # ssh to server and run lsblk to get the device name
   devices = [
-    "/dev/nvme1n1",
-    "/dev/nvme2n1",
-    "/dev/nvme3n1",
-    "/dev/nvme4n1"
+    "/sda/sda3",
+   
   ]
   label = "renec_raid"
   execute :sudo, "mdadm --create --verbose /dev/md0 --level=0 --name=#{label} --raid-devices=#{devices.size} #{devices.join(' ')}"
